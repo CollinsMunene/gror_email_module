@@ -31,7 +31,7 @@ const fileName = 'example.pdf';
 const subject = 'Example Subject';
 const text = 'This is an example email.';
 const recipients = ['recipient1@example.com', 'recipient2@example.com'];
-const zip_required = false/true
+const zip_required = false
 
 email_handler.sendEmailWithPdf(html, fileName, subject, text,recipients,zip_required);
 
@@ -44,7 +44,7 @@ The sendEmailWithPdf function takes five arguments:
 - subject: The subject line of the email
 - text: The text content of the email
 - recipients: An array of recipient email addresses
-- zip_required: a boolean if the document should be zipped or not
+- zip_required: a boolean if the document should be zipped or not ( default is false)
 
 ## License
 This module is licensed under the MIT License.

@@ -11,7 +11,7 @@
     "README.md"
   ],
   "author": "collinshillary1@gmail.com",
-  "homepage": "README.md",
+  "homepage": "https://github.com/CollinsMunene/gror_email_module/README.md",
   "license": "ISC",
   "dependencies": {
     "archiver": "^5.3.1",
