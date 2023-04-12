@@ -7,21 +7,30 @@ const fs = require('fs');
 let transport;
 
 async function pdf(html) {
-  const browser = await Puppeteer.launch({ headless: true })
-  const page = await browser.newPage()
-  await page.setContent(html)
+  try {
 
-  const pdfBuffer = page.pdf({
-    path:null,
-    landscape:true,
-    timeout: 60000 
-  })
+    const browser = await Puppeteer.launch()
+    const page = await browser.newPage()
+    await page.setContent(html)
 
-  page.on('error', err => console.log('Page error: ', err));
+    page.on('error', err => console.log('Page error: ', err));
+    
+    const pdfBuffer =await page.pdf({
+      path:null,
+      landscape:true,
+      timeout: 60000 
+    })
 
-  await browser.close()
+    page.on('error', err => console.log('Page error: ', err));
+  
+    await browser.close()
+  
+    return pdfBuffer
+  } catch (error) {
+    console.log(error)
+    return false
+  }
 
-  return pdfBuffer
 }
 
 function init(username, password){
@@ -33,6 +42,7 @@ function sendEmailWithPdf(html, file_name, email_subject, email_text,recipients,
   if(transport){
     const output = fs.createWriteStream(__dirname + '/'+email_subject+'.zip');
     pdf(html).then(async (pdfBuffer) => {
+    if(pdfBuffer!=false){
       if(zip_required){
         let archive = archiver('zip', {
           zlib: { level: 9 } // compression level
@@ -104,6 +114,9 @@ function sendEmailWithPdf(html, file_name, email_subject, email_text,recipients,
             function: `${file_name} Email Process`,
           });
         }
+    }else{
+      console.log("Contact Admin")
+    }
     });
   }else{
     console.log("Kindly Initialize the package")
@@ -113,6 +126,7 @@ function sendEmailWithPdf(html, file_name, email_subject, email_text,recipients,
     });
   }
 }
+
 module.exports = {
   init,
   sendEmailWithPdf
