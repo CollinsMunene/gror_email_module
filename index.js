@@ -61,14 +61,8 @@ function sendEmailWithPdf(
 
           archive.append(pdfBuffer, { name: file_name });
 
-          console.log("zip starting....");
-
           archive.finalize();
 
-      
-          archive.on("end", () => {
-            console.log("zip ended....");
-          });
 
           var GeneralHelperOptions = {
             from: "grorapp@gror.io",
@@ -95,7 +89,7 @@ function sendEmailWithPdf(
                 function: `${file_name} Email Process`,
               });
             } else {
-              console.log("sent");
+              console.log("Email Sent");
 
               logger.info(`Email sent successfully. ${info.messageId}`, {
                 path: "",
@@ -111,7 +105,7 @@ function sendEmailWithPdf(
           });
         }
       } else {
-        console.log("Contact Admin");
+        console.log("Attachment is too big, sending email without attachment");
         var GeneralHelperOptions = {
           from: "grorapp@gror.io",
           to: recipients,
@@ -127,7 +121,7 @@ function sendEmailWithPdf(
                 function: `${file_name} Email Process`,
               });
             } else {
-              console.log("sent");
+              console.log("Email sent");
 
               logger.info(`Email sent successfully. ${info.messageId}`, {
                 path: "",
@@ -146,8 +140,8 @@ function sendEmailWithPdf(
       }
     });
   } else {
-    console.log("Kindly Initialize the package");
-    logger.error("Kindly Initialize the package", {
+    console.log("Kindly initialize the package");
+    logger.error("Kindly initialize the package", {
       path: "module",
       function: `${file_name} Email Process`,
     });
