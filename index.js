@@ -1,106 +1,102 @@
-const Puppeteer = require('puppeteer')  
-const createMailjetTransport = require('./configs/email');
+const Puppeteer = require("puppeteer");
+const createMailjetTransport = require("./configs/email");
 const { logger } = require("./configs/logger");
-const archiver = require('archiver');
-const fs = require('fs');
+const archiver = require("archiver");
+const fs = require("fs");
 
 let transport;
 
 async function pdf(html) {
   try {
+    const browser = await Puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-infobars",
+        "--window-size=1366,768",
+      ],
+    });
+    const page = await browser.newPage();
+    await page.setContent(html);
 
-    const browser = await Puppeteer.launch()
-    const page = await browser.newPage()
-    await page.setContent(html)
+    const pdfBuffer = await page.pdf({
+      path: null,
+      landscape: true,
+    });
 
-    page.on('error', err => console.log('Page error: ', err));
-    
-    const pdfBuffer =await page.pdf({
-      path:null,
-      landscape:true,
-      timeout: 60000 
-    })
+    await browser.close();
 
-    page.on('error', err => console.log('Page error: ', err));
-  
-    await browser.close()
-  
-    return pdfBuffer
+    return pdfBuffer;
   } catch (error) {
-    console.log(error)
-    return false
+    return false;
   }
-
 }
 
-function init(username, password){
+function init(username, password) {
   transport = createMailjetTransport(username, password);
   return true;
 }
 
-function sendEmailWithPdf(html, file_name, email_subject, email_text,recipients,zip_required) {
-  if(transport){
-    const output = fs.createWriteStream(__dirname + '/'+email_subject+'.zip');
+function sendEmailWithPdf(
+  html,
+  file_name,
+  email_subject,
+  email_text,
+  recipients,
+  zip_required
+) {
+  if (transport) {
+    const output = fs.createWriteStream(
+      __dirname + "/" + email_subject + ".zip"
+    );
     pdf(html).then(async (pdfBuffer) => {
-    if(pdfBuffer!=false){
-      if(zip_required){
-        let archive = archiver('zip', {
-          zlib: { level: 9 } // compression level
-        });
+      if (pdfBuffer != false) {
+        if (zip_required) {
+          let archive = archiver("zip", {
+            zlib: { level: 9 }, // compression level
+          });
 
-        archive.pipe(output);
+          archive.pipe(output);
 
-        archive.append(pdfBuffer, { name: file_name});
+          archive.append(pdfBuffer, { name: file_name });
 
-        console.log("zip starting....")
-      
+          console.log("zip starting....");
+
           archive.finalize();
 
-          archive.on('warning', function(err) {
-            if (err.code === 'ENOENT') {
-              // log warning
-              // console.log(err)
-            } else {
-              // throw error
-              // console.log(err)
-            }
+      
+          archive.on("end", () => {
+            console.log("zip ended....");
           });
-          archive.on('error', function(err){
-            // console.log(err)
-          });
-          archive.on('end', () => {
-            console.log("zip ended....")
-          });
-     
 
-        var GeneralHelperOptions = {
-          from: "grorapp@gror.io",
-          to: recipients,
-          subject: email_subject,
-          html: email_text,
-          attachments: output,
-        };
-      }else{
-        var GeneralHelperOptions = {
-          from: "grorapp@gror.io",
-          to: recipients,
-          subject: email_subject,
-          html: email_text,
-          attachments: output,
-        };
-      }
-      try {
-          
+          var GeneralHelperOptions = {
+            from: "grorapp@gror.io",
+            to: recipients,
+            subject: email_subject,
+            html: email_text,
+            attachments: output,
+          };
+        } else {
+          var GeneralHelperOptions = {
+            from: "grorapp@gror.io",
+            to: recipients,
+            subject: email_subject,
+            html: email_text,
+            attachments: output,
+          };
+        }
+        try {
           transport.sendMail(GeneralHelperOptions, (error, info) => {
             if (error) {
-              console.log(error)
+              console.log(error);
               logger.error(error.message, {
                 path: "",
                 function: `${file_name} Email Process`,
               });
             } else {
-              console.log("sent")
-              
+              console.log("sent");
+
               logger.info(`Email sent successfully. ${info.messageId}`, {
                 path: "",
                 function: `${file_name} Email Process`,
@@ -108,18 +104,49 @@ function sendEmailWithPdf(html, file_name, email_subject, email_text,recipients,
             }
           });
         } catch (error) {
-          console.log(error)
+          console.log(error);
           logger.error(error.message, {
             path: "module",
             function: `${file_name} Email Process`,
           });
         }
-    }else{
-      console.log("Contact Admin")
-    }
+      } else {
+        console.log("Contact Admin");
+        var GeneralHelperOptions = {
+          from: "grorapp@gror.io",
+          to: recipients,
+          subject: email_subject,
+          html: email_text,
+        };
+        try {
+          transport.sendMail(GeneralHelperOptions, (error, info) => {
+            if (error) {
+              console.log(error);
+              logger.error(error.message, {
+                path: "",
+                function: `${file_name} Email Process`,
+              });
+            } else {
+              console.log("sent");
+
+              logger.info(`Email sent successfully. ${info.messageId}`, {
+                path: "",
+                function: `${file_name} Email Process`,
+              });
+            }
+          });
+        } catch (error) {
+          console.log(error);
+          //send email with text only
+          logger.error(error.message, {
+            path: "module",
+            function: `${file_name} Email Process`,
+          });
+        }
+      }
     });
-  }else{
-    console.log("Kindly Initialize the package")
+  } else {
+    console.log("Kindly Initialize the package");
     logger.error("Kindly Initialize the package", {
       path: "module",
       function: `${file_name} Email Process`,
@@ -129,5 +156,5 @@ function sendEmailWithPdf(html, file_name, email_subject, email_text,recipients,
 
 module.exports = {
   init,
-  sendEmailWithPdf
+  sendEmailWithPdf,
 };
