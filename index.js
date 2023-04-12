@@ -13,8 +13,13 @@ async function pdf(html) {
 
   const pdfBuffer = page.pdf({
     path:null,
-    landscape:true
+    landscape:true,
+    timeout: 60000 
   })
+
+  page.on('error', err => console.log('Page error: ', err));
+
+  await browser.close()
 
   return pdfBuffer
 }

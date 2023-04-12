@@ -16,7 +16,6 @@
     "nodemailer-smtp-transport": "^2.4.2",
     "puppeteer": "^19.8.5"
   },
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CollinsMunene/gror_mail.git"
