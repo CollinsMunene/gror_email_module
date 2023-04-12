@@ -1,8 +1,8 @@
-# Gror Email
+# Gror Mail
 
 - module
 
-Gror Email is a Node.js module for sending email messages with PDF attachments using the Mailjet email service and the Nodemailer library and uses the pdf package to generate PDFs from HTML.
+Gror Mail is a Node.js module for sending email messages with PDF attachments using the Mailjet email service and the Nodemailer library and uses the pdf package to generate PDFs from HTML.
 
 This also has the zipping capabilities for large files.
 
@@ -11,7 +11,7 @@ To use this module, you first need to install it and its dependencies:
 
 Copy code
 ```sh
-npm install gror_email_module
+npm install gror_mail
 ```
 
 ### Usage 
@@ -19,7 +19,7 @@ First, you need to initialize the module with username and password:
 
 Copy code
 ```sh
-const email_handler = require('gror_email_module');
+const email_handler = require('gror_mail');
 
 email_handler.init('username', 'password'); 
 ```
