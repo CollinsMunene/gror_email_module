@@ -106,14 +106,14 @@ function sendEmailWithPdf(
         }
       } else {
         console.log("Attachment is too big, sending email without attachment");
-        var GeneralHelperOptions = {
+        var zGeneralHelperOptions = {
           from: "grorapp@gror.io",
           to: recipients,
           subject: email_subject,
           html: email_text,
         };
         try {
-          transport.sendMail(GeneralHelperOptions, (error, info) => {
+          transport.sendMail(zGeneralHelperOptions, (error, info) => {
             if (error) {
               console.log(error);
               logger.error(error.message, {
