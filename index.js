@@ -21,8 +21,13 @@ async function pdf(html) {
     await page.setContent(html);
 
     const pdfBuffer = await page.pdf({
-      path: null,
-      landscape: true,
+      format: 'A4',
+      margin: {
+        top: '1cm',
+        right: '1cm',
+        bottom: '1cm',
+        left: '1cm',
+    },
     });
 
     await browser.close();
@@ -79,7 +84,10 @@ function sendEmailWithPdf(
               to: recipients,
               subject: email_subject,
               html: email_text,
-              attachments: output,
+              attachments: {
+                  filename: file_name,
+                  content: pdfBuffer,
+                },
             };
           }
           try {
