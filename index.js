@@ -1,6 +1,5 @@
 const Puppeteer = require("puppeteer");
 const createMailjetTransport = require("./configs/email");
-const { logger } = require("./configs/logger");
 const archiver = require("archiver");
 const fs = require("fs");
 
@@ -72,7 +71,7 @@ function sendEmailWithPdf(
             archive.finalize();
 
             var GeneralHelperOptions = {
-              from: "grorapp@gror.io",
+              from: "web-alert@gror.io",
               to: recipients,
               subject: email_subject,
               html: email_text,
@@ -80,7 +79,7 @@ function sendEmailWithPdf(
             };
           } else {
             var GeneralHelperOptions = {
-              from: "grorapp@gror.io",
+              from: "web-alert@gror.io",
               to: recipients,
               subject: email_subject,
               html: email_text,
@@ -94,32 +93,22 @@ function sendEmailWithPdf(
             transport.sendMail(GeneralHelperOptions, (error, info) => {
               if (error) {
                 console.log(error);
-                logger.error(error.message, {
-                  path: "",
-                  function: `${file_name} Email Process`,
-                });
+              
               } else {
                 console.log("Email Sent");
 
-                logger.info(`Email sent successfully. ${info.messageId}`, {
-                  path: "",
-                  function: `${file_name} Email Process`,
-                });
               }
             });
           } catch (error) {
             console.log(error);
-            logger.error(error.message, {
-              path: "module",
-              function: `${file_name} Email Process`,
-            });
+           
           }
         } else {
           console.log(
             "Attachment is too big, sending email without attachment"
           );
           var zGeneralHelperOptions = {
-            from: "grorapp@gror.io",
+            from: "web-alert@gror.io",
             to: recipients,
             subject: email_subject,
             html: email_text,
@@ -128,26 +117,15 @@ function sendEmailWithPdf(
             transport.sendMail(zGeneralHelperOptions, (error, info) => {
               if (error) {
                 console.log(error);
-                logger.error(error.message, {
-                  path: "",
-                  function: `${file_name} Email Process`,
-                });
+             
               } else {
                 console.log("Email sent");
 
-                logger.info(`Email sent successfully. ${info.messageId}`, {
-                  path: "",
-                  function: `${file_name} Email Process`,
-                });
               }
             });
           } catch (error) {
             console.log(error);
-            //send email with text only
-            logger.error(error.message, {
-              path: "module",
-              function: `${file_name} Email Process`,
-            });
+          
           }
         }
       });
@@ -155,7 +133,7 @@ function sendEmailWithPdf(
       //don't generate pdf
 
       var GeneralHelperOptions = {
-        from: "grorapp@gror.io",
+        from: "web-alert@gror.io",
         to: recipients,
         subject: email_subject,
         html: email_text,
@@ -165,33 +143,21 @@ function sendEmailWithPdf(
         transport.sendMail(GeneralHelperOptions, (error, info) => {
           if (error) {
             console.log(error);
-            logger.error(error.message, {
-              path: "",
-              function: `${file_name} Email Process`,
-            });
+           
           } else {
             console.log("Email Sent");
 
-            logger.info(`Email sent successfully. ${info.messageId}`, {
-              path: "",
-              function: `${file_name} Email Process`,
-            });
+           
           }
         });
       } catch (error) {
         console.log(error);
-        logger.error(error.message, {
-          path: "module",
-          function: `${file_name} Email Process`,
-        });
+      
       }
     }
   } else {
     console.log("Kindly initialize the package");
-    logger.error("Kindly initialize the package", {
-      path: "module",
-      function: `${file_name} Email Process`,
-    });
+  
   }
 }
 

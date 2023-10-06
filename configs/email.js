@@ -3,8 +3,8 @@ const smtp = require('nodemailer-smtp-transport');
 
 function createMailjetTransport(username, password) {
   return nodemailer.createTransport(smtp({
-    host: 'in-v3.mailjet.com',
-    port: 465,
+    host: 'smtp.office365.com',
+    port: 587,
     auth: {
       user: username,
       pass: password
