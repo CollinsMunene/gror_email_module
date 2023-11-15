@@ -54,30 +54,30 @@ function sendEmailWithPdf(
   if (transport) {
     if (pdf_required) {
       //generate pdf
-      // const output = fs.createWriteStream(
-      //   __dirname + "/" + email_subject + ".zip"
-      // );
-      pdf(html).then(async (pdfBuffer) => {
+      return pdf(html).then(async (pdfBuffer) => {
         if (pdfBuffer != false) {
-          // if (zip_required) {
-          //   let archive = archiver("zip", {
-          //     zlib: { level: 9 }, // compression level
-          //   });
+          if (zip_required) {
+            const output = fs.createWriteStream(
+              __dirname + "/" + email_subject + ".zip"
+            );
+            let archive = archiver("zip", {
+              zlib: { level: 9 }, // compression level
+            });
 
-          //   archive.pipe(output);
+            archive.pipe(output);
 
-          //   archive.append(pdfBuffer, { name: file_name });
+            archive.append(pdfBuffer, { name: file_name });
 
-          //   archive.finalize();
+            archive.finalize();
 
-          //   var GeneralHelperOptions = {
-          //     from: "web-alert@gror.io",
-          //     to: recipients,
-          //     subject: email_subject,
-          //     html: email_text,
-          //     attachments: output,
-          //   };
-          // } else {
+            var GeneralHelperOptions = {
+              from: "web-alert@gror.io",
+              to: recipients,
+              subject: email_subject,
+              html: email_text,
+              attachments: output,
+            };
+          } else {
             var GeneralHelperOptions = {
               from: "web-alert@gror.io",
               to: recipients,
@@ -88,7 +88,7 @@ function sendEmailWithPdf(
                   content: pdfBuffer,
                 },
             };
-          // }
+          }
           try {
             transport.sendMail(GeneralHelperOptions, (error, info) => {
               if (error) {
@@ -100,7 +100,7 @@ function sendEmailWithPdf(
               }
             });
           } catch (error) {
-            return error
+           return error
            
           }
         } else {
