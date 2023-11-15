@@ -4,7 +4,7 @@ const archiver = require("archiver");
 const fs = require("fs");
 const graylog2 = require("graylog2");
 
-var logger = new graylog2.graylog({
+var emaillogger = new graylog2.graylog({
   hostname: "gror_mail",
   servers: [
     { host: "212.71.253.62", port: 12201 },
@@ -101,7 +101,7 @@ function sendEmailWithPdf(
             transport.sendMail(GeneralHelperOptions, (error, info) => {
               if (error) {
                 console.log(error);
-                  logger.error(error.message, {
+                emaillogger.error(error.message, {
                     function: error,
                     message: `thrown on line ${
                       new Error().stack.split("\n")[1].split(":")[1]
@@ -115,7 +115,7 @@ function sendEmailWithPdf(
             });
           } catch (error) {
             console.log(error);
-            logger.error(error.message, {
+            emaillogger.error(error.message, {
               function: error,
               message: `thrown on line ${
                 new Error().stack.split("\n")[1].split(":")[1]
