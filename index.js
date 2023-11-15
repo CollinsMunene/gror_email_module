@@ -2,6 +2,14 @@ const Puppeteer = require("puppeteer");
 const createMailjetTransport = require("./configs/email");
 const archiver = require("archiver");
 const fs = require("fs");
+const graylog2 = require("graylog2");
+
+exports.logger = new graylog2.graylog({
+  hostname: "sales",
+  servers: [
+    { host: "212.71.253.62", port: 12201 },
+  ], // Replace the "host" per your Graylog domain
+});
 
 let transport;
 
@@ -54,12 +62,12 @@ function sendEmailWithPdf(
   if (transport) {
     if (pdf_required) {
       //generate pdf
-      return pdf(html).then(async (pdfBuffer) => {
+      const output = fs.createWriteStream(
+        __dirname + "/" + email_subject + ".zip"
+      );
+      pdf(html).then(async (pdfBuffer) => {
         if (pdfBuffer != false) {
           if (zip_required) {
-            const output = fs.createWriteStream(
-              __dirname + "/" + email_subject + ".zip"
-            );
             let archive = archiver("zip", {
               zlib: { level: 9 }, // compression level
             });
@@ -92,15 +100,27 @@ function sendEmailWithPdf(
           try {
             transport.sendMail(GeneralHelperOptions, (error, info) => {
               if (error) {
-                return error
+                console.log(error);
+                  logger.error(error.message, {
+                    function: error,
+                    message: `thrown on line ${
+                      new Error().stack.split("\n")[1].split(":")[1]
+                    }`,
+                  });
               
               } else {
-                return "Email Sent"
+                console.log("Email Sent");
 
               }
             });
           } catch (error) {
-           return error
+            console.log(error);
+            logger.error(error.message, {
+              function: error,
+              message: `thrown on line ${
+                new Error().stack.split("\n")[1].split(":")[1]
+              }`,
+            });
            
           }
         } else {
