@@ -4,8 +4,8 @@ const archiver = require("archiver");
 const fs = require("fs");
 const graylog2 = require("graylog2");
 
-exports.logger = new graylog2.graylog({
-  hostname: "sales",
+var logger = new graylog2.graylog({
+  hostname: "gror_mail",
   servers: [
     { host: "212.71.253.62", port: 12201 },
   ], // Replace the "host" per your Graylog domain
