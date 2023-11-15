@@ -110,7 +110,10 @@ function sendEmailWithPdf(
               
               } else {
                 console.log("Email Sent");
-                emaillogger.error("success")
+                // emaillogger.error("success")
+                emaillogger.error("success email",{
+                  function: JSON.stringify(GeneralHelperOptions)
+                })
 
               }
             });
