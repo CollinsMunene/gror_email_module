@@ -1,6 +1,6 @@
 {
   "name": "gror_mail",
-  "version": "1.0.36",
+  "version": "1.0.37",
   "description": "a module to be used to generated pdf or send emails directly",
   "main": "index.js",
   "scripts": {
