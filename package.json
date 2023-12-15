@@ -1,6 +1,6 @@
 {
   "name": "gror_mail",
-  "version": "1.0.37",
+  "version": "1.0.38",
   "description": "a module to be used to generated pdf or send emails directly",
   "main": "index.js",
   "scripts": {
@@ -10,11 +10,9 @@
   "homepage": "https://github.com/CollinsMunene/gror_email_module/README.md",
   "license": "ISC",
   "dependencies": {
-    "archiver": "^5.3.1",
     "graylog2": "^0.2.1",
     "nodemailer": "^6.9.1",
-    "nodemailer-smtp-transport": "^2.4.2",
-    "puppeteer": "^19.11.1"
+    "nodemailer-smtp-transport": "^2.4.2"
   },
   "repository": {
     "type": "git",
