@@ -191,34 +191,31 @@ function sendEmailWithPdf(
   zip_required,
   pdf_required
 ) {
-  var GeneralHelperOptions = {
-    from: "web-alert@gror.io",
-    to: recipients,
-    subject: email_subject,
-    html: email_text,
-  };
+   
+  return new Promise((resolve,reject) => {
+    var GeneralHelperOptions = {
+      from: "web-alert@gror.io",
+      to: recipients,
+      subject: email_subject,
+      html: email_text,
+    };
 
-  try {
     transport.sendMail(GeneralHelperOptions, (error, info) => {
       if (error) {
+        
         emaillogger.error(error.message, {
-          function: error,
-          message: `thrown on line ${
+          function: `email processing failed, thrown on line ${
             new Error().stack.split("\n")[1].split(":")[1]
-          }`,
+          }`
         });
+        reject(false); // Reject the Promise if there's an error
       } else {
         console.log("Email Sent");
+        resolve(true); // Resolve the Promise with the information about the sent email
       }
     });
-  } catch (error) {
-    emaillogger.error(error.message, {
-      function: error,
-      message: `thrown on line ${
-        new Error().stack.split("\n")[1].split(":")[1]
-      }`,
-    });
-  }
+  });
+
 }
 
 module.exports = {
